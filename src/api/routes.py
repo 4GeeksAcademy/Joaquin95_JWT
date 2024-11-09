@@ -27,7 +27,7 @@ def handle_hello():
 def create_user():
     body = request.get_json()
     user_email = body['email']
-    user_password = hashlib.sha256(body['password']).encode("utf-8")
+    user_password = hashlib.sha256(body['password'].encode("utf-8")).hexdigest()
     user = user(email = user_email, password = user_password)
     db.session.add(user)
     db.session.commit()
@@ -38,7 +38,7 @@ def create_user():
 def login():
         body = request.get_json()
         user_email = body['email']
-        user_password = hashlib.sha256(body['password']).encode("utf-8")
+        user_password = hashlib.sha256(body['password'].encode("utf-8")).hexdigest()
         user = user.query.filter_by(email = user_email, password = user_password).first()
         if user and user.password == user_password:
             access_token = create_access_token(identity = user.id)
