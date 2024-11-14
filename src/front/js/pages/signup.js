@@ -14,9 +14,15 @@ export const Signup = () => {
                 email: email,
                 password: password
             })
-        })
-        let data = await response.json()
-    }
+        });
+        if (response.ok) {
+            const data = await response.json();
+            alert("Signup successful!"); // Display success message
+            // Optionally store token: localStorage.setItem("token", data.token);
+        } else {
+            alert("Error creating user"); // Display error message if signup fails
+        }
+    };
 
 	return (
 		<div className="text-center mt-5">

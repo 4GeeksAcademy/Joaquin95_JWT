@@ -14,7 +14,7 @@ api = Blueprint('api', __name__)
 CORS(api)
 
 
-@api.route('/hello', methods=['POST', 'GET'])
+@api.route('/hello', methods=['POST', 'G  ET'])
 def handle_hello():
 
     response_body = {
@@ -24,12 +24,12 @@ def handle_hello():
     return jsonify(response_body), 200
 
 @api.route('/signup', methods=['POST'])
-def create_user():
+def create_User():
     body = request.get_json()
     user_email = body['email']
     user_password = hashlib.sha256(body['password'].encode("utf-8")).hexdigest()
-    user = user(email = user_email, password = user_password)
-    db.session.add(user)
+    new_user = User(email=user_email, password=user_password)
+    db.session.add(new_user)
     db.session.commit()
 
     return jsonify("User successfully created")
@@ -39,16 +39,34 @@ def login():
         body = request.get_json()
         user_email = body['email']
         user_password = hashlib.sha256(body['password'].encode("utf-8")).hexdigest()
-        user = user.query.filter_by(email = user_email, password = user_password).first()
+        user = User.query.filter_by(email=user_email, password=user_password).first()
+
         if user and user.password == user_password:
-            access_token = create_access_token(identity = user.id)
-            return jsonify(access_token = access_token, user = user)
+            access_token = create_access_token(identity=user.id)
+
+            return jsonify(access_token=access_token, user=user), 200
         else:
-            return jsonify("user doesnt exists")
+            return jsonify({"message": "User does not exist"}), 404
+        
+
+def private():
+    # Get the current user's identity from the JWT token
+    current_user_id = get_jwt_identity()
+    
+    # Query the user from the database using the identity (user ID)
+    user = User.query.get(current_user_id)
+    if user:
+        return jsonify({
+            "message": f"Welcome {user.email}, you have access to this private content!"
+        }), 200
+    else:
+        return jsonify({"message": "User not found"}), 404
 
 @api.route('/profile', methods=['GET'])
-@jwt_required
+@jwt_required()
+
+
 def get_profile():
     uid = get_jwt_identity()
-    profile = profile.query.filter_by(id=uid).first()
+    profile = User.query.get(uid).first()
     return jsonify(profile)
