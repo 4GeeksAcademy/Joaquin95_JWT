@@ -10,11 +10,11 @@ import hashlib
 
 api = Blueprint('api', __name__)
 
-# Allow CORS requests to this API
+
 CORS(api)
 
 
-@api.route('/hello', methods=['POST', 'G  ET'])
+@api.route('/hello', methods=['POST', 'GET'])
 def handle_hello():
 
     response_body = {
@@ -50,10 +50,9 @@ def login():
         
 
 def private():
-    # Get the current user's identity from the JWT token
-    current_user_id = get_jwt_identity()
     
-    # Query the user from the database using the identity (user ID)
+    current_user_id = get_jwt_identity()
+
     user = User.query.get(current_user_id)
     if user:
         return jsonify({

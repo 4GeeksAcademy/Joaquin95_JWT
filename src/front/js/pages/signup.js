@@ -17,10 +17,9 @@ export const Signup = () => {
         });
         if (response.ok) {
             const data = await response.json();
-            alert("Signup successful!"); // Display success message
-            // Optionally store token: localStorage.setItem("token", data.token);
+            alert("Signup successful!"); 
         } else {
-            alert("Error creating user"); // Display error message if signup fails
+            alert("Error creating user"); 
         }
     };
 
