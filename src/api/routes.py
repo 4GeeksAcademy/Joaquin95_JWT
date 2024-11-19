@@ -28,8 +28,8 @@ def create_User():
     body = request.get_json()
     user_email = body['email']
     user_password = hashlib.sha256(body['password'].encode("utf-8")).hexdigest()
-    new_user = User(email=user_email, password=user_password)
-    db.session.add(new_user)
+    user = User(email=user_email, password=user_password)
+    db.session.add(user)
     db.session.commit()
 
     return jsonify("User successfully created")
@@ -44,28 +44,17 @@ def login():
         if user and user.password == user_password:
             access_token = create_access_token(identity=user.id)
 
-            return jsonify(access_token=access_token, user=user), 200
+            return jsonify(access_token=access_token, user=user)
         else:
-            return jsonify({"message": "User does not exist"}), 404
+            return jsonify("User does not exist")
         
 
-def private():
-    
-    current_user_id = get_jwt_identity()
 
-    user = User.query.get(current_user_id)
-    if user:
-        return jsonify({
-            "message": f"Welcome {user.email}, you have access to this private content!"
-        }), 200
-    else:
-        return jsonify({"message": "User not found"}), 404
-
-@api.route('/profile', methods=['GET'])
+@api.route('/user', methods=['GET'])
 @jwt_required()
 
 
-def get_profile():
+def get_user():
     uid = get_jwt_identity()
-    profile = User.query.get(uid).first()
-    return jsonify(profile)
+    user = User.query.get(uid).first()
+    return jsonify(user)

@@ -6,23 +6,21 @@ export const Login = () => {
 	const { store, actions } = useContext(Context);
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const navigate = useNavigate();
+	const navigate = useNavigate()
 
 	const loginUser = async () => {
 		const response = await fetch(process.env.BACKEND_URL + "/login", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ email, password })
+			body: JSON.stringify({ 
+				email: email,
+                password: password
+			 })
 		});
 
-		if (response.ok) {
-			const data = await response.json();
-			sessionStorage.setItem("token", data.access_token); 
-			navigate("/private");
-		} else {
-			alert("Login failed. Please check your email and password."); 
-		}
-	};
+		let data = await response.json()
+        navigate("/user")
+    }
 
 	return (
 		<div className="text-center mt-5">
