@@ -29,6 +29,7 @@ def create_User():
     user_email = body['email']
     user_password = hashlib.sha256(body['password'].encode("utf-8")).hexdigest()
     user = User(email=user_email, password=user_password)
+
     db.session.add(user)
     db.session.commit()
 
@@ -42,9 +43,9 @@ def login():
         user = User.query.filter_by(email=user_email, password=user_password).first()
 
         if user and user.password == user_password:
-            access_token = create_access_token(identity=user.id)
+            access_token = create_access_token(identity=user.email)
 
-            return jsonify(access_token=access_token, user=user)
+            return jsonify(access_token=access_token)
         else:
             return jsonify("User does not exist")
         
@@ -55,6 +56,6 @@ def login():
 
 
 def get_user():
-    uid = get_jwt_identity()
-    user = User.query.get(uid).first()
-    return jsonify(user)
+    email = get_jwt_identity()
+    user = User.query.filter_by(email=email).first()
+    return jsonify(user.serialize())

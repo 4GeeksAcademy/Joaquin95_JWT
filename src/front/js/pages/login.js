@@ -9,7 +9,7 @@ export const Login = () => {
 	const navigate = useNavigate()
 
 	const loginUser = async () => {
-		const response = await fetch(process.env.BACKEND_URL + "/login", {
+		const response = await fetch(process.env.BACKEND_URL + "/api/login", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ 
@@ -18,9 +18,16 @@ export const Login = () => {
 			 })
 		});
 
-		let data = await response.json()
-        navigate("/user")
-    }
+		if (response.ok) {
+			const data = await response.json();
+			sessionStorage.setItem("token", data.access_token);
+			// actions.setToken(data.access_token); 
+			navigate("/profile"); 
+			console.log("logged in")
+		} else {
+			console.log("Login failed");
+		}
+	};
 
 	return (
 		<div className="text-center mt-5">

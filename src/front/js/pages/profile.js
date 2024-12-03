@@ -9,7 +9,7 @@ export const Profile = () => {
 		console.log(store.token)
 		let response = await fetch(process.env.BACKEND_URL + "/user" , {
 			headers: {
-				'Authorization': "Bearer" + store.token,
+				'Authorization': "Bearer " + store.token,
 				'content-type': 'application/json'
 			}
 		})
