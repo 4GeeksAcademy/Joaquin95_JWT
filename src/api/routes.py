@@ -58,4 +58,6 @@ def login():
 def get_user():
     email = get_jwt_identity()
     user = User.query.filter_by(email=email).first()
+    print(email, "Email!!!!!")
+    print(user, "User!!!!")
     return jsonify(user.serialize())
